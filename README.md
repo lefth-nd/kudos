@@ -1,3 +1,5 @@
+<img src=https://img.shields.io/badge/progress-2%2F5-orange />
+
 # Welcome to Remix!
 
 - [Remix Docs](https://remix.run/docs)
