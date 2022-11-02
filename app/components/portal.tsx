@@ -24,6 +24,9 @@ export const Portal: React.FC<props> = ({ children, wrapperId }) => {
             created = true
             element = createWrapper(wrapperId)
         }
+
+        setWrapper(element)
+
         return () => {
             if (created && element?.parentNode) {
                 element.parentNode.removeChild(element)
