@@ -1,4 +1,5 @@
-import { json, LoaderFunction, redirect, ActionFunction } from "@remix-run/node";
+import { json, redirect, } from "@remix-run/node";
+import type { LoaderFunction, ActionFunction } from "@remix-run/node";
 import { useLoaderData, useActionData } from "@remix-run/react";
 import { getUserById } from "~/utils/user.server";
 import { Modal } from "~/components/modal";
@@ -6,7 +7,7 @@ import { getUser } from '~/utils/auth.server';
 import { UserCircle } from '~/components/user-circle';
 import { useState } from 'react';
 // @ts-ignore
-import { KudoStyle, Color, Emoji } from '@prisma/client';
+import type { KudoStyle, Color, Emoji } from '@prisma/client';
 import { SelectBox } from '~/components/select-box';
 import { colorMap, emojiMap } from '~/utils/constants';
 import { Kudo } from '~/components/kudo';
