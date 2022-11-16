@@ -5,9 +5,11 @@ import { Layout } from '~/components/layout'
 import { getOtherUsers } from '~/utils/user.server'
 import { useLoaderData, Outlet } from '@remix-run/react'
 import { getFilteredKudos } from '~/utils/kudo.server'
-import { Kudo as IKudo, Profile } from '@prisma/client'
+import type { Kudo as IKudo, Profile, Prisma } from '@prisma/client'
 import { Kudo } from '~/components/kudo'
 import { SearchBar } from '~/components/search-bar'
+import { sortOptions } from '~/utils/constants'
+
 
 interface KudoWithProfile extends IKudo {
     author: {
@@ -17,8 +19,45 @@ interface KudoWithProfile extends IKudo {
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)
+    const url = new URL(request.url)
+    const sort = url.searchParams.get('sort')
+    const filter = url.searchParams.get('filter')
+
+    let sortOptions: Prisma.KudoOrderByWithRelationInput = {}
+    if (sort) {
+        if (sort === 'date') {
+            sortOptions = { author: { profile: { firstName: 'desc' } } }
+        }
+        if (sort === 'sender') {
+            sortOptions = { author: { profile: { firstName: 'asc'}}}
+
+        }
+        if (sort === 'emoji') {
+            sortOptions = { style: { emoji: 'asc'}}
+        }
+        
+    }
+
+    let textFilter: Prisma.KudoWhereInput = {}
+    if (filter) {
+        textFilter = {
+            OR: [
+                { message: { mode: 'insensitive', contains: filter } },
+                {
+                    author: {
+                        OR: [
+                            { profile: { is: {firstName: { mode: 'insensitive', contains: filter }}}},
+                            { profile: { is: {lastName: { mode: 'insensitive', contains: filter }}}},
+                        ],
+                    },
+                },
+            ],
+        }
+    }
+    
+
     const users = await getOtherUsers(userId)
-    const kudos = await getFilteredKudos(userId, {}, {})
+    const kudos = await getFilteredKudos(userId, sortOptions, textFilter)
     return json({ users, kudos })
 }
 
