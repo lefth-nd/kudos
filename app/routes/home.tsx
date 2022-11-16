@@ -7,6 +7,7 @@ import { useLoaderData, Outlet } from '@remix-run/react'
 import { getFilteredKudos } from '~/utils/kudo.server'
 import { Kudo as IKudo, Profile } from '@prisma/client'
 import { Kudo } from '~/components/kudo'
+import { SearchBar } from '~/components/search-bar'
 
 interface KudoWithProfile extends IKudo {
     author: {
@@ -29,7 +30,7 @@ export default function Home() {
                 <div className="h-full flex">
                     <UserPanel users={users} />
                     <div className="flex-1 flex-col">
-
+                        <SearchBar />
                     <div className="flex-1 flex">
                         <div className="w-full p-10 flex flex-col gap-y-4">
                             {kudos.map((kudo: KudoWithProfile) => (
